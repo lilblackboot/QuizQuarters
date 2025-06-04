@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173', // frontend dev port
+    origin: 'https://vercel.com/lilblackboots-projects/quiz-quarters', // frontend dev port
     methods: ['GET', 'POST']
   }
 });
