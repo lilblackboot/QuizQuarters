@@ -4,7 +4,12 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 
 const app = express();
+app.use(cors({
+  origin: "https://your-frontend-url.vercel.app", // ← change this!
+  methods: ["GET", "POST"]
+}));
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: 'https://vercel.com/lilblackboots-projects/quiz-quarters', // frontend dev port
