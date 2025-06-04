@@ -17,6 +17,7 @@ app.use(express.json());
 app.get('/', (req, res) => res.send("Quiz Room Backend is running"));
 
 const users = {}; // { socketId: { username, roomId } }
+const scores = {}; // { roomId: { username: score } }
 
 io.on('connection', (socket) => {
   console.log('New socket connected:', socket.id);
@@ -54,6 +55,29 @@ io.on('connection', (socket) => {
       io.to(roomId).emit('room-users', roomUsers);
       console.log(`${user.username} left room ${roomId}`);
     }
+  });
+
+    socket.on("submit-answer", ({ roomId, selected, correct, username }) => {
+    if (!scores[roomId]) scores[roomId] = {};
+    if (!scores[roomId][username]) scores[roomId][username] = 0;
+
+    if (selected === correct) {
+      scores[roomId][username] += 1;
+    }
+
+    // Build leaderboard
+    const leaderboard = Object.entries(scores[roomId])
+      .map(([user, score]) => ({ user, score }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3); // top 3 only
+
+    const totalPlayers = Object.keys(
+      Object.fromEntries(
+        Object.entries(users).filter(([_, u]) => u.roomId === roomId)
+      )
+    ).length;
+
+    io.to(roomId).emit("update-leaderboard", { leaderboard, totalPlayers });
   });
 });
 

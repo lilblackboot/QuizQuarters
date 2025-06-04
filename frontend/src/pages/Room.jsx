@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import io from "socket.io-client";
@@ -51,9 +50,44 @@ function Room() {
     setCurrentQuestion(qData);
   };
 
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [hasAnswered, setHasAnswered] = useState(false);
+
+  const handleAnswer = (index) => {
+    if (hasAnswered || isHost) return;
+
+    setSelectedOption(index);
+    setHasAnswered(true);
+
+    socketRef.current.emit("submit-answer", {
+      roomId,
+      selected: index,
+      correct: currentQuestion.correctOption,
+      username,
+    });
+  };
+
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [totalPlayers, setTotalPlayers] = useState(0);
+
+  useEffect(() => {
+    if (!socketRef.current) return;
+    const handler = ({ leaderboard, totalPlayers }) => {
+      setLeaderboard(leaderboard);
+      setTotalPlayers(totalPlayers);
+    };
+    socketRef.current.on("update-leaderboard", handler);
+
+    return () => {
+      socketRef.current.off("update-leaderboard", handler);
+    };
+  }, []);
+
+
   return (
-    <div>
-      <div className="p-10">
+    <div className="flex">
+      <div>
+        <div className="p-10">
         <h1 className="text-xl font-bold mb-2">Room: {roomId}</h1>
         <h2 className="mb-4">Logged in as: {username}</h2>
 
@@ -63,6 +97,19 @@ function Room() {
             <li key={u.id} className="text-blue-600">{u.username}</li>
           ))}
         </ul>
+      </div>
+      <div className="bg-white p-4 rounded shadow mt-6 w-full max-w-md">
+  <h2 className="font-bold text-lg mb-2">🏆 Leaderboard</h2>
+  <p className="mb-2">Total Players: {totalPlayers}</p>
+  <ol>
+    {leaderboard.map((entry, index) => (
+      <li key={index}>
+        {index + 1}. {entry.user} — {entry.score} point{entry.score !== 1 ? "s" : ""}
+      </li>
+    ))}
+  </ol>
+</div>
+
       </div>
       {isHost && (
         <div className="bg-white p-4 rounded shadow w-full max-w-md">
@@ -121,9 +168,18 @@ function Room() {
             <img src={currentQuestion.image} className="mb-4 max-w-full rounded" />
           )}
           <ul className="space-y-2">
-            {currentQuestion.options.map((opt, i) => (
-              <li key={i} className="bg-white p-2 rounded border">{opt}</li>
-            ))}
+           {currentQuestion.options.map((opt, i) => (
+  <li
+    key={i}
+    className={`p-2 border rounded cursor-pointer ${
+      selectedOption === i ? "bg-blue-300" : "bg-white"
+    }`}
+    onClick={() => handleAnswer(i)}
+  >
+    {opt}
+  </li>
+))}
+
           </ul>
         </div>
       )}
