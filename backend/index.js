@@ -57,6 +57,18 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on("new-question", (qData) => {
+  setCurrentQuestion(qData);
+  setSelectedOption(null);
+  setHasAnswered(false);
+});
+
+socket.on("end-quiz", ({ roomId }) => {
+  io.to(roomId).emit("quiz-ended");
+});
+
+
+
     socket.on("submit-answer", ({ roomId, selected, correct, username }) => {
     if (!scores[roomId]) scores[roomId] = {};
     if (!scores[roomId][username]) scores[roomId][username] = 0;
