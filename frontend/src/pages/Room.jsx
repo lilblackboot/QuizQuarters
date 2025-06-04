@@ -27,7 +27,7 @@ function Room() {
   const isHost = users.length > 0 && users[0].username === username;
 
   useEffect(() => {
-    socketRef.current = io('http://localhost:5000');
+    socketRef.current = io('https://quizquarters.onrender.com');
 
     socketRef.current.emit("join-room", { username, roomId });
 
@@ -160,7 +160,7 @@ function Room() {
               tabIndex={0}
             >
               {copied ? "Copied!" : "Copy"}
-              
+
               
               
               
