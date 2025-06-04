@@ -5,14 +5,14 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors({
-  origin: "https://your-frontend-url.vercel.app", // ← change this!
+  origin: "https://quiz-quarters.vercel.app/", // ← change this!
   methods: ["GET", "POST"]
 }));
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'https://vercel.com/lilblackboots-projects/quiz-quarters', // frontend dev port
+    origin: 'https://quiz-quarters.vercel.app/', // frontend dev port
     methods: ['GET', 'POST']
   }
 });
