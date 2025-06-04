@@ -7,7 +7,6 @@ function Room() {
   const [searchParams] = useSearchParams();
   const username = searchParams.get("username");
   const [question, setQuestion] = useState("");
-  const [image, setImage] = useState(null);
   const [options, setOptions] = useState(["", "", "", ""]);
   const [correctOption, setCorrectOption] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -19,7 +18,6 @@ function Room() {
   const [quizEnded, setQuizEnded] = useState(false);
   const [timer, setTimer] = useState(10);
 
-  
   const [copied, setCopied] = useState(false);
 
   const socketRef = useRef();
@@ -86,7 +84,6 @@ function Room() {
       options,
       correctOption,
       roomId,
-      image: image ? URL.createObjectURL(image) : null // temp for testing
     };
 
     socketRef.current.emit("send-question", qData);
@@ -109,7 +106,6 @@ function Room() {
 
   const handleNextQuestion = () => {
     setQuestion("");
-    setImage(null);
     setOptions(["", "", "", ""]);
     setCorrectOption(0);
     setCurrentQuestion(null);
@@ -160,10 +156,6 @@ function Room() {
               tabIndex={0}
             >
               {copied ? "Copied!" : "Copy"}
-
-              
-              
-              
             </button>
           </span>
         </div>
@@ -214,11 +206,6 @@ function Room() {
                 className="border border-gray-700 bg-black text-white rounded p-2 mb-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-              />
-              <input
-                type="file"
-                onChange={(e) => setImage(e.target.files[0])}
-                className="mb-2 w-full text-white"
               />
               <div className="grid grid-cols-2 gap-2 mb-2">
                 {[0, 1, 2, 3].map((i) => (
@@ -278,13 +265,6 @@ function Room() {
           {currentQuestion && (
             <div className="bg-gray-900 rounded-xl shadow p-6 mt-4 border border-gray-700">
               <h2 className="text-xl font-semibold mb-4 text-blue-400">{currentQuestion.question}</h2>
-              {currentQuestion.image && (
-                <img
-                  src={currentQuestion.image}
-                  alt="Question"
-                  className="mb-4 max-w-full rounded shadow"
-                />
-              )}
               <ul className="space-y-4 mt-2">
                 {currentQuestion.options.map((opt, i) => {
                   const isSelected = selectedOption === i;
