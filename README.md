@@ -36,14 +36,14 @@ A real-time multiplayer quiz game that allows users to join quiz rooms, answer q
 ## 🔧 Folder Structure
 
 ```
-/client
+/frontend
   └── /src
       └── /pages
           └── Home.jsx
           └── Room.jsx         // Main quiz logic, UI & real-time interaction
       └── /App.jsx
       └── /index.js
-/server
+/backend
   └── index.js                // Socket.IO logic, room/user management
 ```
 
@@ -82,7 +82,7 @@ cd quiz-quarters
 ### 2. Run Backend
 
 ```bash
-cd server
+cd backend
 npm install
 node index.js
 ```
@@ -90,7 +90,7 @@ node index.js
 ### 3. Run Frontend
 
 ```bash
-cd client
+cd frontend
 npm install
 npm run dev
 ```
