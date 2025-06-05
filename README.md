@@ -39,6 +39,7 @@ A real-time multiplayer quiz game that allows users to join quiz rooms, answer q
 /client
   └── /src
       └── /pages
+          └── Home.jsx
           └── Room.jsx         // Main quiz logic, UI & real-time interaction
       └── /App.jsx
       └── /index.js
